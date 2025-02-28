@@ -15,9 +15,9 @@ const CONFIG = {
   // Microsoft Graph API endpoints
   graphEndpoint: 'https://graph.microsoft.com/v1.0',
   // Update with your registered app's client ID from Azure AD
-  clientId: 'YOUR_CLIENT_ID_HERE',
+  clientId: '5024031e-e935-4aae-851e-384167e5decb',
   // Update with your tenant ID or use 'common' for multi-tenant apps
-  authority: 'https://login.microsoftonline.com/YOUR_TENANT_ID_OR_COMMON',
+  authority: 'https://login.microsoftonline.com/091225bf-801e-428d-b9ef-c01b6b44c31f',
   // The URL where this app is hosted (for redirect after auth)
   redirectUri: 'https://mattymcgregor.github.io/daily-diary-builder/'
 };
