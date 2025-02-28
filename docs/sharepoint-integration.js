@@ -46,14 +46,18 @@ function initMSAL() {
     msalInstance = new window.msal.PublicClientApplication(msalConfig);
     
     // Check if there's a response from redirect
+    console.log('Handling redirect promise...');
     msalInstance.handleRedirectPromise()
       .then(response => {
         if (response) {
+          console.log('Received auth response:', response);
           tokenResponse = response;
           updateUIAfterLogin();
         } else {
+          console.log('No redirect response, checking for existing accounts...');
           // Check if user is already logged in
           const accounts = msalInstance.getAllAccounts();
+          console.log('Found accounts:', accounts.length);
           if (accounts.length > 0) {
             updateUIAfterLogin();
           }
@@ -86,21 +90,31 @@ async function signIn() {
   showLoadingIndicator('Signing in...');
   
   if (!msalInstance) {
+    console.log('MSAL not initialized, initializing now...');
     initMSAL();
     return;
   }
   
   try {
+    console.log('Starting sign-in process...');
     const loginRequest = {
       scopes: ['https://graph.microsoft.com/Sites.Read.All', 'https://graph.microsoft.com/Sites.ReadWrite.All']
     };
     
-    // Use popup for embedding scenarios
-    tokenResponse = await msalInstance.loginPopup(loginRequest);
-    updateUIAfterLogin();
+    console.log('Configured login request:', loginRequest);
+    console.log('Redirect URI:', CONFIG.redirectUri);
+    
+    // Try redirect instead of popup to avoid blockers
+    console.log('Initiating login redirect...');
+    msalInstance.loginRedirect(loginRequest);
+    console.log('Redirect initiated'); // We likely won't see this in the console as the page will redirect
+    
+    // The redirect will take the user away from the page and back
+    // We won't reach this code until the redirect completes and
+    // the user returns to the page, where handleRedirectPromise will process it
   } catch (error) {
     console.error('Sign-in failed:', error);
-    displayError('Sign-in failed. Please try again.');
+    displayError('Sign-in failed. Please try again: ' + error.message);
   } finally {
     hideLoadingIndicator();
   }
@@ -150,14 +164,9 @@ async function getAccessToken() {
     console.error('Error getting access token:', error);
     
     if (error instanceof msal.InteractionRequiredAuthError) {
-      try {
-        const response = await msalInstance.acquireTokenPopup(silentRequest);
-        return response.accessToken;
-      } catch (popupError) {
-        console.error('Error acquiring token through popup:', popupError);
-        displayError('Authentication error. Please try again.');
-        return null;
-      }
+      // Use redirect for token acquisition too
+      msalInstance.acquireTokenRedirect(silentRequest);
+      return null; // This will redirect the user, so we won't reach here until they come back
     }
     
     return null;
@@ -605,37 +614,15 @@ document.addEventListener('DOMContentLoaded', () => {
     saveButton.addEventListener('click', saveDiaryToSharePoint);
   }
   
-  // Add auth buttons if they don't exist
-  if (!document.getElementById('signInButton')) {
-    const authContainer = document.createElement('div');
-    authContainer.className = 'auth-container';
-    authContainer.style.position = 'absolute';
-    authContainer.style.top = '10px';
-    authContainer.style.right = '10px';
-    
-    const signInButton = document.createElement('button');
-    signInButton.id = 'signInButton';
-    signInButton.className = 'btn';
-    signInButton.textContent = 'Sign in to SharePoint';
+  // Add event listeners to auth buttons
+  const signInButton = document.getElementById('signInButton');
+  if (signInButton) {
     signInButton.addEventListener('click', signIn);
-    
-    const userNameElement = document.createElement('span');
-    userNameElement.id = 'userName';
-    userNameElement.style.display = 'none';
-    userNameElement.style.marginRight = '10px';
-    
-    const signOutButton = document.createElement('button');
-    signOutButton.id = 'signOutButton';
-    signOutButton.className = 'btn btn-outline';
-    signOutButton.textContent = 'Sign out';
-    signOutButton.style.display = 'none';
+  }
+  
+  const signOutButton = document.getElementById('signOutButton');
+  if (signOutButton) {
     signOutButton.addEventListener('click', signOut);
-    
-    authContainer.appendChild(signInButton);
-    authContainer.appendChild(userNameElement);
-    authContainer.appendChild(signOutButton);
-    
-    document.body.appendChild(authContainer);
   }
 });
 

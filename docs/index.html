@@ -112,6 +112,13 @@
   </style>
 </head>
 <body>
+  <!-- Auth Container -->
+  <div class="auth-container">
+    <button id="signInButton" class="btn">Sign in to SharePoint</button>
+    <span id="userName" style="display: none; margin-right: 10px; font-weight: bold;"></span>
+    <button id="signOutButton" class="btn btn-outline" style="display: none;">Sign out</button>
+  </div>
+
   <div id="root">
     <div class="container">
       <h1>Inspector Daily Diary</h1>
@@ -379,5 +386,28 @@
   
   <!-- SharePoint Integration Script -->
   <script src="sharepoint-integration.js"></script>
+  <script>
+    // Initialize authentication on load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add event listeners to auth buttons
+      const signInButton = document.getElementById('signInButton');
+      if (signInButton) {
+        signInButton.addEventListener('click', function() {
+          if (window.spDiary && window.spDiary.signIn) {
+            window.spDiary.signIn();
+          }
+        });
+      }
+      
+      const signOutButton = document.getElementById('signOutButton');
+      if (signOutButton) {
+        signOutButton.addEventListener('click', function() {
+          if (window.spDiary && window.spDiary.signOut) {
+            window.spDiary.signOut();
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
