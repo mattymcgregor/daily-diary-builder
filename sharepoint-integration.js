@@ -228,7 +228,20 @@ async function createDiaryEntry(diaryData) {
       return null;
     }
     
-    const endpoint = `${CONFIG.graphEndpoint}/sites/${getSiteId()}/lists/${getListId(CONFIG.diaryListName)}/items`;
+    // Get siteId and listId BEFORE constructing the endpoint
+    const siteId = await getSiteId();
+    if (!siteId) {
+      displayError('Could not get site ID. Please check your permissions.');
+      return null;
+    }
+    
+    const listId = await getListId(CONFIG.diaryListName);
+    if (!listId) {
+      displayError(`Could not find list "${CONFIG.diaryListName}". Please check if it exists.`);
+      return null;
+    }
+    
+    const endpoint = `${CONFIG.graphEndpoint}/sites/${siteId}/lists/${listId}/items`;
     
     // Format data according to Microsoft Graph API requirements
     const formattedData = {
@@ -254,6 +267,8 @@ async function createDiaryEntry(diaryData) {
       }
     };
     
+    console.log('Sending request to:', endpoint);
+    
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -264,6 +279,8 @@ async function createDiaryEntry(diaryData) {
     });
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API Error Response:', errorText);
       throw new Error(`Error creating diary entry: ${response.status} ${response.statusText}`);
     }
     
@@ -286,7 +303,20 @@ async function createActivity(activity, diaryId) {
     const token = await getAccessToken();
     if (!token) return null;
     
-    const endpoint = `${CONFIG.graphEndpoint}/sites/${getSiteId()}/lists/${getListId(CONFIG.activitiesListName)}/items`;
+    // Get siteId and listId BEFORE constructing the endpoint
+    const siteId = await getSiteId();
+    if (!siteId) {
+      console.error('Could not get site ID for activity creation');
+      return null;
+    }
+    
+    const listId = await getListId(CONFIG.activitiesListName);
+    if (!listId) {
+      console.error(`Could not find list "${CONFIG.activitiesListName}" for activity creation`);
+      return null;
+    }
+    
+    const endpoint = `${CONFIG.graphEndpoint}/sites/${siteId}/lists/${listId}/items`;
     
     // Format data according to Microsoft Graph API requirements
     const formattedData = {
@@ -308,6 +338,8 @@ async function createActivity(activity, diaryId) {
       }
     };
     
+    console.log('Creating activity at:', endpoint);
+    
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -318,6 +350,8 @@ async function createActivity(activity, diaryId) {
     });
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Activity API Error Response:', errorText);
       throw new Error(`Error creating activity: ${response.status} ${response.statusText}`);
     }
     
@@ -337,8 +371,17 @@ async function getSiteId() {
     const token = await getAccessToken();
     if (!token) return null;
     
-    const siteUrl = CONFIG.sharePointSite.replace('https://', '');
-    const endpoint = `${CONFIG.graphEndpoint}/sites/${siteUrl}`;
+    // Parse the SharePoint site URL to get the host and relative path
+    const url = new URL(CONFIG.sharePointSite);
+    const hostName = url.hostname; // e.g. "netorg4973613.sharepoint.com"
+    const sitePath = url.pathname; // e.g. "/sites/cn-21413"
+    
+    // Format according to Microsoft Graph API requirements
+    // For SharePoint sites, we need to use the format: {hostname},{sitePath}
+    const siteIdentifier = `${hostName},${sitePath}`;
+    const endpoint = `${CONFIG.graphEndpoint}/sites/${siteIdentifier}`;
+    
+    console.log('Getting site ID from:', endpoint);
     
     const response = await fetch(endpoint, {
       headers: {
@@ -347,10 +390,13 @@ async function getSiteId() {
     });
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Site ID API Error Response:', errorText);
       throw new Error(`Error getting site ID: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json();
+    console.log('Site data:', data);
     return data.id;
   } catch (error) {
     console.error('Error in getSiteId:', error);
@@ -371,6 +417,8 @@ async function getListId(listName) {
     
     const endpoint = `${CONFIG.graphEndpoint}/sites/${siteId}/lists?$filter=displayName eq '${listName}'`;
     
+    console.log('Getting list ID from:', endpoint);
+    
     const response = await fetch(endpoint, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -378,10 +426,14 @@ async function getListId(listName) {
     });
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('List ID API Error Response:', errorText);
       throw new Error(`Error getting list ID: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json();
+    console.log('Lists data:', data);
+    
     if (data.value && data.value.length > 0) {
       return data.value[0].id;
     }
