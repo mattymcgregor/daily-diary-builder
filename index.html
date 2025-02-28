@@ -1,18 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>daily-diary-builder</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
-    <meta property="og:image" content="/og-image.png" />
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspector Daily Diary</title>
+  <meta name="description" content="Inspector Daily Diary for Construction Sites" />
+  <meta name="author" content="Matt McGregor" />
+  <style>
+    /* Minimal styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
 
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: white;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #0070f3;
+      color: white;
+      border: none;
+    }
+
+    .btn:hover {
+      background-color: #0060df;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: #0070f3;
+      border: 1px solid #0070f3;
+    }
+
+    .btn-outline:hover {
+      background-color: #f9f9f9;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="container">
+      <h1>Inspector Daily Diary</h1>
+      <div class="card">
+        <div class="header">
+          <h2>Diary Header</h2>
+        </div>
+        <div class="grid">
+          <div class="form-group">
+            <label class="form-label">Contract Description</label>
+            <input type="text" class="form-input" placeholder="Enter contract description" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contract Number</label>
+            <input type="text" class="form-input" placeholder="Enter contract number" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-input" placeholder="Enter location" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inspector on Site</label>
+            <input type="text" class="form-input" placeholder="Enter inspector name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contract Day Number</label>
+            <input type="number" class="form-input" placeholder="Enter day number" />
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">
+          <h2>Weather Conditions</h2>
+        </div>
+        <div class="grid">
+          <div class="form-group">
+            <label class="form-label">Weather Type</label>
+            <select class="form-input">
+              <option>Select weather condition</option>
+              <option>Dry / Hot</option>
+              <option>Humid</option>
+              <option>Overcast</option>
+              <option>Windy</option>
+              <option>Light Rain</option>
+              <option>Heavy Rain</option>
+              <option>Storms</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rain Period</label>
+            <select class="form-input">
+              <option>Select rain period</option>
+              <option>Nil</option>
+              <option>Overnight</option>
+              <option>Morning</option>
+              <option>All Day</option>
+              <option>Intermittent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rain Gauge (mm)</label>
+            <input type="number" class="form-input" placeholder="Enter rainfall in mm" />
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">
+          <h2>Activity Log</h2>
+          <button class="btn btn-outline">Add Activity</button>
+        </div>
+        <div style="border: 1px solid #ddd; border-radius: 4px; padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-weight: 500; margin-bottom: 1rem;">Activity 1</div>
+          <div class="grid">
+            <div class="form-group">
+              <label class="form-label">Location From</label>
+              <input type="text" class="form-input" placeholder="Enter starting location" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Location To</label>
+              <input type="text" class="form-input" placeholder="Enter ending location" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Labour Type</label>
+              <input type="text" class="form-input" placeholder="Enter labor type" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Labour Number</label>
+              <input type="number" class="form-input" placeholder="Enter number of laborers" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hours</label>
+              <input type="number" step="0.5" class="form-input" placeholder="Enter hours worked" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Comments</label>
+              <textarea class="form-input" rows="2" placeholder="Enter any comments or notes"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">
+          <h2>Additional Information</h2>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" rows="4" placeholder="Enter notes for events (delays, environmental issues, etc.)"></textarea>
+        </div>
+        <div class="grid">
+          <div class="form-group">
+            <label class="form-label">Inspector Signature</label>
+            <input type="text" class="form-input" placeholder="Inspector Name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contract Administrator Signature</label>
+            <input type="text" class="form-input" placeholder="Contract Administrator Name" />
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 2rem; text-align: center;">
+        <button class="btn btn-outline" style="margin-right: 1rem;">Save Draft</button>
+        <button class="btn">Submit to SharePoint</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Log a message about SharePoint integration
+      console.log('This is a placeholder for the Inspector Daily Diary app. SharePoint integration will be implemented when embedded.');
+      
+      // Add some interactivity to the buttons
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          alert('This is a demo. SharePoint integration will be implemented when embedded in SharePoint.');
+        });
+      });
+    });
+  </script>
+</body>
 </html>

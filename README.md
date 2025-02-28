@@ -1,69 +1,94 @@
-# Welcome to your Lovable project
+# Inspector Daily Diary Builder
 
-## Project info
+## Project Description
+This is a web application for inspectors to create and submit daily diary entries for construction sites. It captures detailed information about construction activities, weather conditions, and other relevant data for project management.
 
-**URL**: https://lovable.dev/projects/0c469118-252d-4fdd-bddd-591db035be19
+## GitHub Pages Deployment
+This project is deployed to GitHub Pages at:
+https://mattymcgregor.github.io/daily-diary-builder/
 
-## How can I edit this code?
+## SharePoint Integration
+The application is designed to be embedded in a SharePoint page and integrate with SharePoint lists for data storage.
 
-There are several ways of editing your application.
+### How to Embed in SharePoint
+1. In your SharePoint page, add an "Embed" web part
+2. Use the following iframe code:
+```html
+<iframe 
+  src="https://mattymcgregor.github.io/daily-diary-builder/" 
+  width="100%" 
+  height="800px" 
+  frameborder="0"
+  allowfullscreen
+></iframe>
+```
+3. Enable "Resize to fit the page" option
 
-**Use Lovable**
+## Local Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0c469118-252d-4fdd-bddd-591db035be19) and start prompting.
+### Prerequisites
+- Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+### Setup and Run
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone https://github.com/MattMcGregor/daily-diary-builder.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to the project directory
+cd daily-diary-builder
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
+## Technology Stack
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## SharePoint Configuration
+The application is designed to work with two SharePoint lists:
 
-Simply open [Lovable](https://lovable.dev/projects/0c469118-252d-4fdd-bddd-591db035be19) and click on Share -> Publish.
+1. **InspectorDailyDiary** (main list): Contains inspection header details
+   - Contract Description
+   - Contract Number
+   - Location
+   - Date
+   - Inspector on Site
+   - Contract Day Number
+   - Weather
+   - Rain Period
+   - Rain Gauge (mm)
+   - Day Type
+   - Notes
+   - Traffic Management
+   - WH&S Practices
+   - Environmental/Cultural Heritage Practices
 
-## I want to use a custom domain - is that possible?
+2. **InspectionActivities** (related list): Tracks specific activities with lookup to the main list
+   - Location Chainage (From/To)
+   - Labour Type
+   - Labour Number
+   - Plant Type
+   - Plant Number
+   - Hours
+   - Idle time
+   - Checklist (Y/N)
+   - Issue (Y/N)
+   - To be escalated (Y/N)
+   - Comments
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## Authentication
+This app uses Microsoft Authentication Library (MSAL) for authentication with Azure AD to access SharePoint data.
+
+## Troubleshooting GitHub Pages
+If you encounter issues with the GitHub Pages deployment:
+1. Ensure the repository settings have GitHub Pages enabled
+2. Check that the source is set to either the root folder or /docs folder on the main branch
+3. Verify that the index.html file exists in the root directory
+4. Allow a few minutes for changes to propagate after pushing updates
